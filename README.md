@@ -1,28 +1,34 @@
-# B Programming Language
-
-> [!WARNING]
-> Compiler is not fully implemented yet.
-
 <p align=center>
   <img src="./logo/logo.png" width=400>
 </p>
 
-Compiler for the B Programming Language implemented in ~~[Crust](https://github.com/tsoding/crust)~~ [Rust](https://www.rust-lang.org/)
+# B-RS
+
+A blazingly 🔥 fast 🚀 compiler for the B programming language, written in ~~[Crust](https://github.com/tsoding/crust)~~ [Rust](https://www.rust-lang.org/). 🦀
+
+> [!WARNING]
+> Compiler is not fully implemented yet (may take decades of scientific research).
+
+# Why use B-RS?
+- 🔥 Blazingly fast
+- 🕹️ Funny lol
+
+## Quick Start
+
+```console
+$ git clone https://github.com/Mrmayman/b-rs.git
+$ cd b-rs
+$ cargo run
+```
 
 ## Dependencies
 
-- [Rust](https://www.rust-lang.org/) - the compiler is written in it;
+- [Rust](https://www.rust-lang.org/) - the Blazingly 🔥 fast 🚀 programming language used to implement the compiler.
 - [fasm](https://flatassembler.net/) - used as the compiler backend;
 
 Crates:
 - Bindgen
 - cc
-
-## Quick Start
-
-```console
-$ cargo run
-```
 
 ## References
 
