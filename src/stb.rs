@@ -3,9 +3,7 @@ use std::{
     fmt::Display,
 };
 
-use crate::stb_c_lexer::{
-    StbLexer, stb_c_lexer_get_location, stb_c_lexer_get_token, stb_lex_location,
-};
+use crate::stb_c_lexer::{StbLexer, stb_c_lexer_get_token};
 
 // #[allow(non_upper_case_globals)]
 // #[allow(dead_code)]
@@ -15,7 +13,6 @@ use crate::stb_c_lexer::{
 
 pub struct Lexer {
     inner: StbLexer,
-    _input: CString,
     input_path: String,
 }
 
@@ -26,25 +23,28 @@ impl Lexer {
         // TODO: size of identifiers and string literals is limited because of stb_c_lexer.h
         let mut string_store: [i8; 4096] = unsafe { std::mem::zeroed() };
 
-        let inner = unsafe {
-            StbLexer::new(
-                input_stream.as_ptr(),
-                input_stream.as_ptr().add(input_stream.count_bytes()),
-                string_store.as_mut_ptr(),
-                string_store.len() as i32,
-            )
-        };
+        let inner = StbLexer::new(
+            input_stream,
+            string_store.as_mut_ptr(),
+            string_store.len() as i32,
+        );
 
         Self {
             inner,
-            _input: input_stream,
             input_path: input_path.to_owned(),
         }
     }
 
     pub fn diag(&mut self, msg: &str) {
-        let mut loc: stb_lex_location = unsafe { std::mem::zeroed() };
-        unsafe { stb_c_lexer_get_location(&mut self.inner, self.inner.where_firstchar, &mut loc) };
+        self.diag_at(msg, self.inner.where_firstchar);
+    }
+
+    pub fn where_firstchar(&self) -> *const i8 {
+        self.inner.where_firstchar
+    }
+
+    pub fn diag_at(&mut self, msg: &str, whr: *const i8) {
+        let loc = unsafe { self.inner.get_location_at(whr) };
         eprintln!(
             "{}:{}:{}: {msg}",
             self.input_path,
@@ -73,7 +73,7 @@ impl Lexer {
 
     pub fn read_int(&self) -> Option<i64> {
         let tk = self.get_token_inner()?;
-        if let LexToken::Lex(LexTokenInner::ClexIntlit) = tk {
+        if let LexToken::Lex(Clex::Intlit) = tk {
             Some(self.inner.int_number)
         } else {
             None
@@ -106,7 +106,7 @@ impl Lexer {
     }
 
     pub fn expect_ident(&mut self) -> String {
-        self.expect(LexToken::Lex(LexTokenInner::ClexId));
+        self.expect(LexToken::Lex(Clex::Id));
         self.read_string().unwrap()
     }
 
@@ -135,7 +135,7 @@ impl Lexer {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum LexToken {
     Char(char),
-    Lex(LexTokenInner),
+    Lex(Clex),
 }
 
 impl Display for LexToken {
@@ -160,36 +160,36 @@ impl LexToken {
 #[allow(unused)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 #[repr(i64)]
-pub enum LexTokenInner {
-    ClexEof = 256,
-    ClexParseError,
-    ClexIntlit,
-    ClexFloatlit,
-    ClexId,
-    ClexDqstring,
-    ClexSqstring,
-    ClexCharlit,
-    ClexEq,
-    ClexNoteq,
-    ClexLesseq,
-    ClexGreatereq,
-    ClexAndand,
-    ClexOror,
-    ClexShl,
-    ClexShr,
-    ClexPlusplus,
-    ClexMinusminus,
-    ClexPluseq,
-    ClexMinuseq,
-    ClexMuleq,
-    ClexDiveq,
-    ClexModeq,
-    ClexAndeq,
-    ClexOreq,
-    ClexXoreq,
-    ClexArrow,
-    ClexEqarrow,
-    ClexShleq,
-    ClexShreq,
-    ClexFirstUnusedToken,
+pub enum Clex {
+    Eof = 256,
+    ParseError,
+    Intlit,
+    Floatlit,
+    Id,
+    Dqstring,
+    Sqstring,
+    Charlit,
+    Eq,
+    Noteq,
+    Lesseq,
+    Greatereq,
+    Andand,
+    Oror,
+    Shl,
+    Shr,
+    Plusplus,
+    Minusminus,
+    Pluseq,
+    Minuseq,
+    Muleq,
+    Diveq,
+    Modeq,
+    Andeq,
+    Oreq,
+    Xoreq,
+    Arrow,
+    Eqarrow,
+    Shleq,
+    Shreq,
+    FirstUnusedToken,
 }

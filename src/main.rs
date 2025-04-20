@@ -6,6 +6,7 @@ mod stb_c_lexer;
 struct AutoVar {
     name: String,
     offset: usize,
+    whr: *const i8,
 }
 
 fn usage(program_name: &str) {
@@ -82,14 +83,15 @@ fn main() {
                 let name = l.get_ident();
                 vars_offset += 8;
 
-                if vars.iter().any(|n| n.name == name) {
+                if let Some(existing) = vars.iter().find(|n| n.name == name) {
                     l.diag(&format!("ERROR: redefinition of variable `{name}`"));
-                    l.diag("NOTE: the first declaration is located here");
+                    l.diag_at("NOTE: the first declaration is located here", existing.whr);
                     std::process::exit(69);
                 }
                 vars.push(AutoVar {
                     name: name.to_owned(),
                     offset: vars_offset,
+                    whr: l.where_firstchar(),
                 });
                 // TODO: support multiple auto declarations
                 output.push_str("    sub rsp, 8\n");
