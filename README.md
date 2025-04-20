@@ -7,19 +7,21 @@
   <img src="./logo/logo.png" width=400>
 </p>
 
-Compiler for the B Programming Language implemented in [Crust](https://github.com/tsoding/crust)
+Compiler for the B Programming Language implemented in ~~[Crust](https://github.com/tsoding/crust)~~ [Rust](https://www.rust-lang.org/)
 
 ## Dependencies
 
 - [Rust](https://www.rust-lang.org/) - the compiler is written in it;
 - [fasm](https://flatassembler.net/) - used as the compiler backend;
-- [clang](https://clang.llvm.org/) - for linking with the C runtime;
+
+Crates:
+- Bindgen
+- cc
 
 ## Quick Start
 
 ```console
-$ make
-$ ./main
+$ cargo run
 ```
 
 ## References
