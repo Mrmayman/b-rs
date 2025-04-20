@@ -6,6 +6,10 @@
 
 A blazingly 🔥 fast 🚀 compiler for the B programming language, written in ~~[Crust](https://github.com/tsoding/crust)~~ [Rust](https://www.rust-lang.org/). 🦀
 
+Yes, I un-crustified @Tsoding 's Crust project because I had too much time to waste. Additions: A proper Cargo project, safer STB bindings and cleaner, idiomatic code (just for the fun of it).
+
+Hey, committing heresy on someone else's project is also recreational programming :)
+
 > [!WARNING]
 > Compiler is not fully implemented yet (may take decades of scientific research).
 
