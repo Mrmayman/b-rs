@@ -174,7 +174,7 @@ extern void stb_c_lexer_get_location(const stb_lexer *lexer, const char *where, 
 }
 #endif
 
-enum
+enum CLEX
 {
    CLEX_eof = 256,
    CLEX_parse_error,

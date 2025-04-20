@@ -2,3 +2,10 @@
 *.asm
 b
 main
+
+
+# Added by cargo
+
+/target
+
+stb_c_lexer.c
