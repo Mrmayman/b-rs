@@ -1,6 +1,7 @@
 use stb::Lexer;
 
 mod stb;
+mod stb_c_lexer;
 
 struct AutoVar {
     name: String,

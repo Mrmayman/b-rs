@@ -3,33 +3,31 @@ use std::{
     fmt::Display,
 };
 
-use bindings::{
-    stb_c_lexer_get_location, stb_c_lexer_get_token, stb_c_lexer_init, stb_lex_location, stb_lexer,
+use crate::stb_c_lexer::{
+    StbLexer, stb_c_lexer_get_location, stb_c_lexer_get_token, stb_lex_location,
 };
 
-#[allow(non_upper_case_globals)]
-#[allow(dead_code)]
-mod bindings {
-    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
-}
+// #[allow(non_upper_case_globals)]
+// #[allow(dead_code)]
+// mod bindings {
+//     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+// }
 
 pub struct Lexer {
-    inner: stb_lexer,
+    inner: StbLexer,
     _input: CString,
     input_path: String,
 }
 
 impl Lexer {
     pub fn new(input: &str, input_path: &str) -> Self {
-        let mut lexer = unsafe { std::mem::zeroed() };
         let input_stream = CString::new(input).unwrap();
 
         // TODO: size of identifiers and string literals is limited because of stb_c_lexer.h
         let mut string_store: [i8; 4096] = unsafe { std::mem::zeroed() };
 
-        unsafe {
-            stb_c_lexer_init(
-                &mut lexer,
+        let inner = unsafe {
+            StbLexer::new(
                 input_stream.as_ptr(),
                 input_stream.as_ptr().add(input_stream.count_bytes()),
                 string_store.as_mut_ptr(),
@@ -38,7 +36,7 @@ impl Lexer {
         };
 
         Self {
-            inner: lexer,
+            inner,
             _input: input_stream,
             input_path: input_path.to_owned(),
         }
